@@ -1,10 +1,6 @@
 use std::io::prelude::*;
 
-static P_VERSION: &[u8] = b"\x15\x00\xf6\x05\xe0";
-
-fn print_type_of<T>(_: &T) {
-    println!("{}", std::any::type_name::<T>())
-}
+static P_VERSION: &[u8] = b"\x15\x00\xf6\x05\x0e";
 
 fn main() -> std::io::Result<()> {
 	let args: Vec<String> = std::env::args().collect();
@@ -36,8 +32,11 @@ fn main() -> std::io::Result<()> {
 	let packet: &[u8] = &v_packet;
 	stream.write(packet)?;
 	stream.write(&mut b"\x01\x00".to_vec())?;
-	let mut buffer = String::new();
-	stream.read_to_string(&mut buffer)?;
-	println!("{}", buffer);
+	// let mut buffer = String::new();
+	// stream.read_to_string(&mut buffer)?;
+	let mut buf = vec![0u8; 1024];
+	stream.read_exact(&mut buf)?;
+	// println!("{:?}", buf);
+	println!("{}", String::from_utf8_lossy(&buf));
 	Ok(())
 }
